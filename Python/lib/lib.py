@@ -1,4 +1,5 @@
 from pathlib import Path
+import networkx as nx
 
 def read_input(year, day, example = 0) -> str:
     if example == 0:
