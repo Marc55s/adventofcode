@@ -33,7 +33,7 @@ def handle_operation(ID, op, instr, i, c=0, b=0, a=0) -> (int, bool):
         return (2, False)
     elif op == 4:
         x = instr[i+1] if c == 1 else instr[instr[i+1]]
-        # print("out", x)
+        print("out", x)
         output = x
         return (2, False)
     elif op == 5:
