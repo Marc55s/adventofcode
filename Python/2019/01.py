@@ -1,6 +1,6 @@
 from lib import *
 
-input = read_input(2019,1,1).strip()
+input = read_input(2019,1).strip()
 input = input.split("\n");
 
 x = lambda x : (x//3)-2
