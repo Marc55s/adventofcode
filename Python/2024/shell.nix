@@ -6,6 +6,7 @@ in pkgs.mkShell {
       python-pkgs.pandas
       python-pkgs.requests
       python-pkgs.networkx
+      python-pkgs.regex
     ]))
   ];
 }
