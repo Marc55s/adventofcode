@@ -16,7 +16,6 @@ for i in range(h):
             guard = (k, i)
 
 
-
 def in_map(x, y):
     return x >= 0 and x < w and y >= 0 and y < h
 
@@ -33,9 +32,9 @@ right_directions = {(0, -1): (1, 0), (1, 0): (0, 1),
                     (0, 1): (-1, 0), (-1, 0): (0, -1)}
 
 
-def take_step(guard, dir):
-    x = guard[0] + dir[0]
-    y = guard[1] + dir[1]
+def take_step(g, dir):
+    x = g[0] + dir[0]
+    y = g[1] + dir[1]
     return (x, y)
 
 
@@ -61,6 +60,40 @@ def walk(guard, dir):
 
 
 walk(guard, dir)
-
-
 print(len(visited))
+
+obstructions = 0
+
+
+for obstacle in visited:
+    vis = set()
+    dir = (0, -1)
+    player = (guard[0], guard[1])
+
+    map = [x[:] for x in input]
+    x, y = obstacle
+    map[y][x] = '#'
+
+    # isloop
+    while in_map(player[0], player[1]):
+        next_player = take_step(player, dir)
+
+        if not in_map(player[0], player[1]):
+            break
+
+        if (next_player, dir) in vis:
+            obstructions += 1
+            break
+
+        if not in_map(next_player[0], next_player[1]):
+            break
+
+        if map[next_player[1]][next_player[0]] == '#':
+            dir = turn_right(dir)
+        else:
+            player = next_player
+            vis.add((next_player, dir))
+
+
+print("ready")
+print(obstructions)

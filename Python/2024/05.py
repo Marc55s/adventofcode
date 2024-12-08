@@ -14,7 +14,7 @@ for r in rules:
         ordering[x] = [y]
 
 
-def after(page, others, modifylist=[]):
+def is_page_before_others(page, others, modifylist=[]):
     for afterpage in others:
         # either nothings comes after page or other is not comiing after page
         if page not in ordering.keys():
@@ -24,9 +24,11 @@ def after(page, others, modifylist=[]):
     return True
 
 
-def before(page, others):
+def is_page_after_others(page, others):
     for beforepage in others:
-        if beforepage not in ordering.keys() or page not in ordering[beforepage]:
+        if beforepage not in ordering.keys():
+            return False
+        if page not in ordering[beforepage]:
             return False
     return True
 
@@ -35,14 +37,10 @@ def check_update(pages) -> bool:
     # print(pages)
     for page in pages:
         index = pages.index(page)
-        b = pages[0:index]
-        a = pages[index+1:len(pages)]
-        # print(f"page {page} is after {b}({before(page, b)}) and before {a}({after(page, a)})")
-        if before(page, b) and after(page, a):
-            pass
-        else:
+        pages_before_current = pages[0:index]
+        pages_after_current = pages[index+1:len(pages)]
+        if not is_page_after_others(page, pages_before_current) or not is_page_before_others(page, pages_after_current):
             return False
-
     return True
 
 
@@ -54,7 +52,6 @@ def p2(pages):
             index = pages_copy.index(page)
             b = pages_copy[0:index]
             a = pages_copy[index+1:len(pages_copy)]
-            # print(f"page {page} is after {b}({before(page, b)}) and before {a}({after(page, a)})")
             for beforepage in b:
                 if beforepage not in ordering.keys():
                     # on of the beforepage is not followed by anything -->  move beforepage to the end
