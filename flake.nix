@@ -32,6 +32,7 @@
           rustc
           cargo
           python311
+          python311Packages.networkx
         ];
       };
       formatter.x86_64-linux = treefmt-nix.lib.mkWrapper
