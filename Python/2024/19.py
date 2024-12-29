@@ -13,26 +13,52 @@ dic = {}
 found = False
 
 
-def dp(design, old):
-    global found
-    if found:
-        return
-    for i in patterns:
-        cutted = design.removeprefix(i)
-        if cutted == "":
-            found = True
-            print(old)
-            if old not in dic:
-                dic[old] = 1
-            else:
-                dic[old] += 1
-            return True
-        if cutted != design:
-            dp(cutted, old)
+def dp(design):
+    # Done
+    if design == "":
+        return True
+
+    for pattern in patterns:
+        if design.startswith(pattern):
+            cutted = design[len(pattern):]
+            if dp(cutted):
+                return True
+
+    return False
 
 
 ans = 0
 for d in designs:
-    found = False
-    dp(d, d)
-print(len(dic))
+    if dp(d):
+        ans += 1
+print(ans)
+
+
+def dp2(design):
+    # recall
+    if design in memo:
+        return memo[design]
+
+    # Done
+    if design == "":
+        return 1
+
+    count = 0
+    # calculate all ways
+    for pattern in patterns:
+        if design.startswith(pattern):
+            cutted = design[len(pattern):]
+            count += dp2(cutted)
+
+    # memoize and return result
+    memo[design] = count
+    return count
+
+
+memo = {}
+total_ways = 0
+
+for design in designs:
+    total_ways += dp2(design)
+
+print(total_ways)
