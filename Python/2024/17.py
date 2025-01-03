@@ -62,17 +62,25 @@ def run_program(A, B, C, program):
         instruction_p += 2
     return output
 
+print(",".join(map(str,run_program(A,B,C,program))))
 
 output = []
-output = run_program(A, B, C, program)
+new_A = 0
+istart = 0
+j = 1
+while len(program) >= j >= 0:
+    new_A <<= 3
+    for i in range(istart,8):
+        if program[-j:] == run_program(new_A + i,B,C,program):
+            break
+    else:
+        j -= 1
+        new_A >>= 3
+        istart = new_A % 8 +1
+        new_A >>= 3
+        continue
+    j += 1
+    new_A += i
+    istart = 0
+print(new_A)
 
-print(output, A, B, C)
-for i in output:
-    print(str(i)+",", end="")
-# part 2
-start = 1_000_000_00000000
-for i in range(start, start*10):
-    output = run_program(i, B, C, program)
-    if output == program:
-        print("A", i)
-        break
