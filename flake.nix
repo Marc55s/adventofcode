@@ -33,6 +33,8 @@
           cargo
           python311
           python311Packages.networkx
+          python311Packages.matplotlib
+          python311Packages.scipy
         ];
       };
       formatter.x86_64-linux = treefmt-nix.lib.mkWrapper
