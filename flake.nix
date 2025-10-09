@@ -15,30 +15,26 @@
 
   outputs = { self, nixpkgs, treefmt-nix, rust-overlay }:
     let
-      overlays = [ (import rust-overlay) ];
+      overlays = [ rust-overlay.overlays.default ];
+      system = "x86_64-linux";
       pkgs = import nixpkgs {
-        inherit overlays;
-        system = "x86_64-linux";
+        inherit overlays system;
       };
       rustVersion = pkgs.rust-bin.stable.latest.default;
-      rustPlatform = pkgs.makeRustPlatform {
-        cargo = rustVersion;
-        rustc = rustVersion;
-      };
     in
     {
-      devShells.x86_64-linux.default = pkgs.mkShell {
-        packages = with pkgs;[
-          rustc
-          cargo
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs; [
+          rustVersion
           python311
           python311Packages.networkx
           python311Packages.matplotlib
           python311Packages.scipy
         ];
       };
-      formatter.x86_64-linux = treefmt-nix.lib.mkWrapper
-        nixpkgs.legacyPackages.x86_64-linux
+
+      formatter.${system} = treefmt-nix.lib.mkWrapper
+        nixpkgs.legacyPackages.${system}
         {
           projectRootFile = "flake.nix";
           programs.nixpkgs-fmt.enable = true;

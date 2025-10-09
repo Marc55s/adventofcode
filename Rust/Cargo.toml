@@ -1,0 +1,18 @@
+[package]
+name = "Rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[[bin]]
+name = "2025"
+path = "2025/main.rs"
+
+[[bin]]
+name = "day01"
+path = "2025/day01.rs"
+
+[lib]
+name = "aoc"
+path = "lib/lib.rs"
