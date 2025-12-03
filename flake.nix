@@ -26,6 +26,7 @@
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           rustVersion
+          bacon
           python311
           python311Packages.networkx
           python311Packages.matplotlib
