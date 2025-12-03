@@ -35,9 +35,9 @@ pub fn part2(input: &Vec<IdRange>) -> i64 {
             let num_as_str = unknown_id.to_string();
             let len = num_as_str.len();
             for i in 1..=len/2 {
-                // if len % i != 0 {
-                //     continue;
-                // }
+                if len % i != 0 {
+                    continue;
+                }
                 let two = &num_as_str[i..];
                 let one = &num_as_str[0..num_as_str.len()-i];
                 if one.eq(two) {
