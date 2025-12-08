@@ -33,6 +33,10 @@ path = "2025/day05.rs"
 name = "day06"
 path = "2025/day06.rs"
 
+[[bin]]
+name = "day07"
+path = "2025/day07.rs"
+
 [lib]
 name = "aoc"
 path = "lib/lib.rs"
