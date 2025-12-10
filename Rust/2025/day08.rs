@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 pub fn setup(input: &str) -> Vec<JunctionBox> {
     input
@@ -69,10 +69,8 @@ pub fn part1(input: &Vec<JunctionBox>) -> i64 {
 
             // Intersects with multiple circuits -> merge
             multi_indices => {
-                // merge everything into the first matching circuit found.
                 let primary_idx = multi_indices[0];
 
-                // Iterate through the other indices in reverse order -> so the indices dont change
                 for &idx in multi_indices[1..].iter().rev() {
                     let removed_set = circuits.remove(idx);
                     circuits[primary_idx].extend(removed_set);
@@ -90,7 +88,9 @@ pub fn part1(input: &Vec<JunctionBox>) -> i64 {
 
     circuit_lengths.iter().take(3).product::<i64>()
 }
+
 pub fn part2(input: &Vec<JunctionBox>) -> i64 {
+    let mut last_coordinates: i64 = 0;
     let mut distances: Vec<(i64, JunctionBox, JunctionBox)> = Vec::new(); // Sorted Map by key
     for i in 0..input.len() - 1 {
         for k in (i + 1)..input.len() {
@@ -132,16 +132,12 @@ pub fn part2(input: &Vec<JunctionBox>) -> i64 {
 
                     let inter: HashSet<JunctionBox> = circuits[0].clone().into_iter().filter(|e| e == a || e == b).collect();
                     last_boxes.extend(inter);
-                    // last_boxes.insert(*a);
-                    // last_boxes.insert(*b);
                 }
 
                 // Intersects with multiple circuits -> merge
                 multi_indices => {
-                    // merge everything into the first matching circuit found.
                     let primary_idx = multi_indices[0];
 
-                    // Iterate through the other indices in reverse order -> so the indices dont change
                     for &idx in multi_indices[1..].iter().rev() {
                         let removed_set = circuits.remove(idx);
                         circuits[primary_idx].extend(removed_set);
@@ -149,26 +145,20 @@ pub fn part2(input: &Vec<JunctionBox>) -> i64 {
 
                     let inter: HashSet<JunctionBox> = circuits[0].clone().into_iter().filter(|e| e == a || e == b).collect();
                     last_boxes.extend(inter);
-                    // last_boxes.insert(*a);
-                    // last_boxes.insert(*b);
                     circuits[primary_idx].insert(*a);
                     circuits[primary_idx].insert(*b);
                 }
             }
         }
-        if circuits.len() == 1 && circuits[0].len() == input.len() {
-            println!("circuits: {:?}", circuits);
-            println!("last: {:?}", last_boxes);
-            println!("last: {:?}", last_boxes.iter().map(|e| e.x).product::<i64>());
-
+        if circuits.len() == 1 && circuits[0].len() == input.len() { // every JunctionBox is in on circuit
+            // println!("circuits: {:?}", circuits);
+            // println!("last: {:?}", last_boxes);
+            last_coordinates = last_boxes.iter().map(|e| e.x).product::<i64>();
             break;
         }
         pairs += 1;
-        if pairs % 10 == 0 {
-            println!("pairs: {}", pairs);
-        }
     }
-    0
+    last_coordinates
 }
 
 aoc::main!(2025, 8, part1, part2);
