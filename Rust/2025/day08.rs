@@ -105,7 +105,9 @@ pub fn part2(input: &Vec<JunctionBox>) -> i64 {
     // connect together
     let mut pairs = 0;
     let mut circuits: Vec<HashSet<JunctionBox>> = Vec::new();
+    let mut last_boxes: HashSet<JunctionBox> = HashSet::new();
     loop {
+        last_boxes.clear();
         if let Some(entry) = distances.get(pairs) {
             let (_key, a, b) = entry;
             let matches: Vec<usize> = circuits
@@ -118,12 +120,20 @@ pub fn part2(input: &Vec<JunctionBox>) -> i64 {
                 // No intersection -> make a new circuit
                 [] => {
                     circuits.push(HashSet::from([*a, *b]));
+                    let inter: HashSet<JunctionBox> = circuits[0].clone().into_iter().filter(|e| e == a || e == b).collect();
+                    last_boxes.extend(inter);
+
                 }
 
                 // Intersects with exactly one circuit -> expand
                 [i] => {
                     circuits[*i].insert(*a);
                     circuits[*i].insert(*b);
+
+                    let inter: HashSet<JunctionBox> = circuits[0].clone().into_iter().filter(|e| e == a || e == b).collect();
+                    last_boxes.extend(inter);
+                    // last_boxes.insert(*a);
+                    // last_boxes.insert(*b);
                 }
 
                 // Intersects with multiple circuits -> merge
@@ -137,24 +147,28 @@ pub fn part2(input: &Vec<JunctionBox>) -> i64 {
                         circuits[primary_idx].extend(removed_set);
                     }
 
+                    let inter: HashSet<JunctionBox> = circuits[0].clone().into_iter().filter(|e| e == a || e == b).collect();
+                    last_boxes.extend(inter);
+                    // last_boxes.insert(*a);
+                    // last_boxes.insert(*b);
                     circuits[primary_idx].insert(*a);
                     circuits[primary_idx].insert(*b);
                 }
             }
         }
-        if circuits.len() == 1 {
-            
-        println!("circuits: {:?}", circuits);
+        if circuits.len() == 1 && circuits[0].len() == input.len() {
+            println!("circuits: {:?}", circuits);
+            println!("last: {:?}", last_boxes);
+            println!("last: {:?}", last_boxes.iter().map(|e| e.x).product::<i64>());
+
+            break;
         }
         pairs += 1;
         if pairs % 10 == 0 {
             println!("pairs: {}", pairs);
         }
-        if pairs ==  distances.len() {
-            break;
-        }
     }
     0
 }
 
-aoc::main!(2025, 8, part1, part2[a]);
+aoc::main!(2025, 8, part1, part2);
