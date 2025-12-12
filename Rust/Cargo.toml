@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+itertools = "0.14.0"
+z3 = "0.19.6"
 
 [[bin]]
 name = "2025"
@@ -44,6 +46,10 @@ path = "2025/day08.rs"
 [[bin]]
 name = "day09"
 path = "2025/day09.rs"
+
+[[bin]]
+name = "day10"
+path = "2025/day10.rs"
 
 [lib]
 name = "aoc"

@@ -17,14 +17,34 @@
     let
       overlays = [ rust-overlay.overlays.default ];
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit overlays system;
-      };
+      pkgs = import nixpkgs { inherit overlays system; };
       rustVersion = pkgs.rust-bin.stable.latest.default;
-    in
-    {
+      
+      llvm = pkgs.llvmPackages; 
+    in {
       devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs; [
+        
+        # --- STATIC ENV VARIABLES ---
+        Z3_SYS_Z3_HEADER = "${pkgs.lib.getDev pkgs.z3}/include/z3.h";
+        Z3_LIBRARY_PATH_OVERRIDE = "${pkgs.lib.getLib pkgs.z3}/lib";
+        LIBCLANG_PATH = "${llvm.libclang.lib}/lib";
+
+        # --- DYNAMIC ENV VARIABLES (The Fix) ---
+        # We use shellHook so we can run the clang command to find the header path.
+        shellHook = ''
+          export BINDGEN_EXTRA_CLANG_ARGS="$(echo \
+            -I${pkgs.lib.getDev pkgs.z3}/include \
+            -I${pkgs.lib.getDev pkgs.glibc}/include \
+            -I$(${llvm.clang}/bin/clang -print-resource-dir)/include \
+          )"
+        '';
+
+        buildInputs = [ pkgs.z3 llvm.libclang ];
+
+        nativeBuildInputs = with pkgs; [
+          pkg-config
+          llvm.libclang
+          llvm.clang
           rustVersion
           bacon
           python311
@@ -34,9 +54,8 @@
         ];
       };
 
-      formatter.${system} = treefmt-nix.lib.mkWrapper
-        nixpkgs.legacyPackages.${system}
-        {
+      formatter.${system} =
+        treefmt-nix.lib.mkWrapper nixpkgs.legacyPackages.${system} {
           projectRootFile = "flake.nix";
           programs.nixpkgs-fmt.enable = true;
           programs.rustfmt.enable = true;
