@@ -1,5 +1,4 @@
 use std::cmp::{max, min};
-use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Tile(i64, i64);
@@ -38,17 +37,16 @@ pub fn part1(input: &Vec<Tile>) -> i64 {
 
             let diff_x = 1 + (tile.0 - tile2.0).abs();
             let diff_y = 1 + (tile.1 - tile2.1).abs();
-            areas.push(i64::from(diff_x) * i64::from(diff_y));
+            areas.push(diff_x * diff_y);
         }
     }
 
     *areas.iter().max().unwrap()
 }
 
-pub fn part2(input: &Vec<Tile>) -> i64 {
+pub fn part2(input: &[Tile]) -> i64 {
     let mut v_walls = Vec::new();
     let mut h_walls = Vec::new();
-    let vertex_set: HashSet<Tile> = input.iter().cloned().collect::<HashSet<Tile>>();
     for i in 0..input.len() {
         let tile = &input[i];
         let tile2 = &input[(i + 1) % input.len()];
@@ -73,9 +71,6 @@ pub fn part2(input: &Vec<Tile>) -> i64 {
     let mut max_area = 0;
     for (i, t1) in input.iter().enumerate() {
         for t2 in input.iter().skip(i + 1) {
-            if t1.0 == t2.0 || t1.1 == t2.1 {
-                continue;
-            }
 
             let min_x = min(t1.0, t2.0);
             let max_x = max(t1.0, t2.0);
@@ -86,14 +81,15 @@ pub fn part2(input: &Vec<Tile>) -> i64 {
             let t4 = Tile(t1.0, t2.1);
 
             // Both edge tiles must be inside the tile polygon
-            if !is_inside(t3, &v_walls, &vertex_set) || !is_inside(t4, &v_walls, &vertex_set) {
+            if !is_inside(&t3, &v_walls, &h_walls, input) || !is_inside(&t4, &v_walls, &h_walls, input) {
                 continue;
             }
 
             if walls_intersect_rect(min_x, max_x, min_y, max_y, &v_walls, &h_walls) {
                 continue;
             }
-            let area = (max_x - min_x) * (max_y - min_y);
+
+            let area = (1 + (max_x - min_x)) * (1 + (max_y - min_y));
             if area > max_area {
                 max_area = area;
             }
@@ -102,9 +98,20 @@ pub fn part2(input: &Vec<Tile>) -> i64 {
     max_area
 }
 
-fn is_inside(p: Tile, v_walls: &Vec<VerticalWall>, vertices: &HashSet<Tile>) -> bool {
-    if vertices.contains(&p) {
+fn is_inside(p: &Tile, v_walls: &Vec<VerticalWall>, h_walls: &Vec<HorizontalWall> ,input: &[Tile]) -> bool {
+    if input.contains(p) {
         return true;
+    }
+
+    for w in v_walls {
+        if w.x == p.0 && p.1 >= w.y_min && p.1 <= w.y_max {
+            return true;
+        }
+    }
+    for w in h_walls {
+        if w.y == p.1 && p.0 >= w.x_min && p.0 <= w.x_max {
+            return true;
+        }
     }
 
     let mut intersections = 0;
@@ -117,12 +124,13 @@ fn is_inside(p: Tile, v_walls: &Vec<VerticalWall>, vertices: &HashSet<Tile>) -> 
 }
 
 fn walls_intersect_rect(
-    min_x: i64, max_x: i64, 
-    min_y: i64, max_y: i64, 
-    v_walls: &Vec<VerticalWall>, 
-    h_walls: &Vec<HorizontalWall>
+    min_x: i64,
+    max_x: i64,
+    min_y: i64,
+    max_y: i64,
+    v_walls: &Vec<VerticalWall>,
+    h_walls: &Vec<HorizontalWall>,
 ) -> bool {
-    
     for w in v_walls {
         if w.x > min_x && w.x < max_x {
             if !(w.y_max <= min_y || w.y_min >= max_y) {
@@ -141,4 +149,4 @@ fn walls_intersect_rect(
 
     false
 }
-aoc::main!(2025, 9, part1, part2[a]); // update input day
+aoc::main!(2025, 9, part1, part2); // update input day
