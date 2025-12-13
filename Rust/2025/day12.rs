@@ -2,7 +2,7 @@ pub fn setup(input: &str) -> Vec<String> {
     input.lines().map(|s| s.to_string()).collect()
 }
 pub fn part1(input: &Vec<String>) -> i32 {
-    let mut regions: Vec<_> = input.iter().filter(|s| s.contains('x')).collect();
+    let regions: Vec<_> = input.iter().filter(|s| s.contains('x')).collect();
     let is_fitting: i32 = regions
         .iter()
         .map(|s| {
@@ -28,7 +28,7 @@ pub fn part1(input: &Vec<String>) -> i32 {
     
     is_fitting
 }
-pub fn part2(input: &Vec<String>) -> i32 {
+pub fn part2(_input: &Vec<String>) -> i32 {
     0
 }
 

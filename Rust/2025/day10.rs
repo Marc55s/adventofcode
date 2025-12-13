@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use z3::{ast::Int, Config, Optimize, SatResult};
+use z3::{ast::Int, Optimize, SatResult};
 
 pub fn setup(input: &str) -> Vec<Vec<String>> {
     input

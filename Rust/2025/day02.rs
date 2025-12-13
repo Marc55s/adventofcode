@@ -13,7 +13,7 @@ pub fn setup(input: &str) -> Vec<IdRange> {
 pub fn part1(input: &Vec<IdRange>) -> i64 {
     let mut sum = 0;
     for (a,b) in input {
-        let valid_ids: i64 = (*a..=*b).into_iter().filter(|e| e.to_string().len() % 2 == 0).filter_map(|e| {
+        let valid_ids: i64 = Iterator::filter_map((*a..=*b).filter(|e| -> bool {e.to_string().len() % 2 == 0}), |e| {
             let num_as_str = e.to_string();
             let (first, second) = num_as_str.split_at(num_as_str.len() / 2);
             if first.eq(second) {

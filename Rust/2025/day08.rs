@@ -90,7 +90,6 @@ pub fn part1(input: &Vec<JunctionBox>) -> i64 {
 }
 
 pub fn part2(input: &Vec<JunctionBox>) -> i64 {
-    let mut last_coordinates: i64 = 0;
     let mut distances: Vec<(i64, JunctionBox, JunctionBox)> = Vec::new(); // Sorted Map by key
     for i in 0..input.len() - 1 {
         for k in (i + 1)..input.len() {
@@ -150,15 +149,13 @@ pub fn part2(input: &Vec<JunctionBox>) -> i64 {
                 }
             }
         }
-        if circuits.len() == 1 && circuits[0].len() == input.len() { // every JunctionBox is in on circuit
+        if circuits.len() == 1 && circuits[0].len() == input.len() { // every JunctionBox is in one circuit
             // println!("circuits: {:?}", circuits);
             // println!("last: {:?}", last_boxes);
-            last_coordinates = last_boxes.iter().map(|e| e.x).product::<i64>();
-            break;
+            return last_boxes.iter().map(|e| e.x).product::<i64>();
         }
         pairs += 1;
     }
-    last_coordinates
 }
 
 aoc::main!(2025, 8, part1, part2);
